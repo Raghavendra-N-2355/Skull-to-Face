@@ -1,86 +1,114 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 
 function UploadPage() {
+  const [currentStage, setCurrentStage] = useState(0);
   const [image, setImage] = useState(null);
 
-  const handleImageChange = (e) => {
+  const stages = [
+    "Upload Skull Image",
+    "Skull Completeness Check",
+    "Skull Identification",
+    "Facial Reconstruction",
+  ];
+
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setImage(URL.createObjectURL(file));
+      setCurrentStage(1);
     }
   };
 
+  const startProcessing = () => {
+    let i = 1;
+    const interval = setInterval(() => {
+      if (i < stages.length) {
+        setCurrentStage(i);
+        i++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 2000);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-100 flex flex-col items-center justify-center px-6 py-12">
-      
-      {/* Upload Card */}
-      <div className="bg-white shadow-2xl rounded-3xl p-10 w-full max-w-lg text-center transform transition duration-300 hover:scale-105">
-        
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          Upload Skull Image
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Please upload a skull image to start the facial reconstruction process.
-        </p>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-200 flex flex-col items-center px-6 py-12">
+      <h1 className="text-4xl font-bold text-gray-900 mb-6">
+        Skull Reconstruction Process
+      </h1>
+      <p className="text-gray-600 mb-10 text-lg max-w-2xl text-center">
+        Follow the stages below to reconstruct a face from a skull image.
+      </p>
 
-        {/* File Input */}
-        <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
-          {image ? (
-            <img
-              src={image}
-              alt="Preview"
-              className="h-full w-auto object-contain rounded-lg"
-            />
-          ) : (
-            <div className="flex flex-col items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-12 w-12 text-gray-400 mb-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 15a4 4 0 004 4h10a4 4 0 004-4m-4-4l-4-4m0 0l-4 4m4-4v12"
-                />
-              </svg>
-              <span className="text-gray-500">Click to upload or drag & drop</span>
-              <span className="text-sm text-gray-400">PNG, JPG, JPEG</span>
-            </div>
-          )}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className="hidden"
-          />
-        </label>
+      {/* Stage Tracker */}
+      <div className="relative flex items-center justify-between w-full max-w-3xl mb-12">
+        {/* Background line */}
+        <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-300"></div>
 
-        {/* Buttons */}
-        <div className="mt-8 flex justify-center space-x-4">
-          <Link to="/">
-            <button className="px-6 py-2 rounded-full bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300 transition">
-              ⬅ Back
-            </button>
-          </Link>
-          <Link to="/history">
-            <button
-              disabled={!image}
-              className={`px-6 py-2 rounded-full text-white font-semibold shadow-md transition ${
-                image
-                  ? "bg-blue-600 hover:bg-blue-700"
-                  : "bg-gray-400 cursor-not-allowed"
-              }`}
+        {/* Progress line */}
+        <div
+          className="absolute top-1/2 left-0 h-1 bg-blue-600 transition-all duration-700"
+          style={{
+            width: `${(currentStage / (stages.length - 1)) * 100}%`,
+          }}
+        ></div>
+
+        {stages.map((stage, index) => (
+          <div
+            key={index}
+            className="relative flex flex-col items-center flex-1"
+          >
+            {/* Step circle */}
+            <div
+              className={`w-12 h-12 flex items-center justify-center rounded-full font-bold text-white shadow-lg z-10
+              ${index <= currentStage ? "bg-blue-600" : "bg-gray-400"}`}
             >
-              ⚡ Reconstruct
-            </button>
-          </Link>
-        </div>
+              {index + 1}
+            </div>
+            {/* Stage label */}
+            <p
+              className={`mt-2 text-sm font-medium text-center w-28
+                ${index <= currentStage ? "text-blue-700" : "text-gray-500"}`}
+            >
+              {stage}
+            </p>
+          </div>
+        ))}
       </div>
+
+      {/* Upload Box */}
+      <label className="w-full max-w-lg border-4 border-dashed border-gray-300 rounded-2xl p-10 text-center cursor-pointer bg-white shadow-xl hover:shadow-2xl transition">
+        <input
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleFileChange}
+        />
+        {image ? (
+          <img
+            src={image}
+            alt="Preview"
+            className="mx-auto max-h-60 rounded-lg shadow-lg"
+          />
+        ) : (
+          <div>
+            <p className="text-gray-600 text-lg">📂 Drag & Drop or Click to Upload</p>
+            <p className="text-sm text-gray-400 mt-2">
+              Supported formats: JPG, PNG
+            </p>
+          </div>
+        )}
+      </label>
+
+      {/* Start Button */}
+      {image && (
+        <button
+          onClick={startProcessing}
+          className="mt-8 px-8 py-3 bg-blue-600 text-white font-semibold rounded-full shadow-lg hover:bg-blue-700 transition"
+        >
+          🚀 Start Reconstruction
+        </button>
+      )}
     </div>
   );
 }
