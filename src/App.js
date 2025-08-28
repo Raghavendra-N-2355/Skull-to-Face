@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
+import UploadPage from "./pages/UploadPage";
+import HistoryPage from "./pages/HistoryPage";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
@@ -8,8 +10,8 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/upload" element={<div className="p-10 text-white">Upload Page (Coming Soon)</div>} />
-        <Route path="/history" element={<div className="p-10 text-white">History Page (Coming Soon)</div>} />
+        <Route path="/upload" element={<UploadPage />} />
+        <Route path="/history" element={<HistoryPage />} />
       </Routes>
     </Router>
   );
