@@ -39,6 +39,6 @@ def predict(image_path):
     return class_names[pred_idx], confidence
 
 # Example usage
-image_path = r"C:\Users\ragha\Downloads\project-bolt-sb1-juvswcru (1)\project\Dataset\training\animal_skull\A (6).jpeg"
+image_path = r"C:\Users\ragha\Downloads\skull demo1.jpg"
 label, conf = predict(image_path)
 print(f"Prediction: {label} ({conf*100:.2f}%)")
