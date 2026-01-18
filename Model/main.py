@@ -65,7 +65,7 @@ optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr
 scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
 
 # Training
-epochs = 20
+epochs = 30
 for epoch in range(epochs):
     model.train()
     running_loss = 0.0

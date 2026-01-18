@@ -1,0 +1,3 @@
+@echo off
+echo Starting SkullRecon Frontend...
+npm run dev

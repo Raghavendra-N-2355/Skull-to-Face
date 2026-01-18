@@ -73,7 +73,7 @@ if __name__ == '__main__':
     # ================================
     # Training Loop
     # ================================
-    EPOCHS = 25
+    EPOCHS = 250
     for epoch in range(EPOCHS):
         model.train()
         running_loss = 0.0
