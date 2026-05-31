@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+node_modules/
+dist/
+.firebase/
+.git/
+.gitignore
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+*.log

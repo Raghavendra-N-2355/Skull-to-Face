@@ -8,6 +8,7 @@ export default function App() {
   const [result, setResult] = useState(null)
   const [reconUrl, setReconUrl] = useState(null)
   const [loading, setLoading] = useState(false)
+  const apiBase = import.meta.env.VITE_API_URL || ''
 
   const handleFile = (e) => {
     const f = e.target.files[0]
@@ -29,7 +30,7 @@ export default function App() {
 
     try {
       setStatus('Starting pipeline...')
-      const resp = await fetch('http://localhost:5000/api/predict', {
+      const resp = await fetch(`${apiBase}/api/predict`, {
         method: 'POST',
         body: form
       })
@@ -42,7 +43,7 @@ export default function App() {
       const data = await resp.json()
       setResult(data)
       if (data.reconstruction_url) {
-        setReconUrl(`http://localhost:5000${data.reconstruction_url}`)
+        setReconUrl(`${apiBase}${data.reconstruction_url}`)
       }
       setStatus('Done')
     } catch (err) {

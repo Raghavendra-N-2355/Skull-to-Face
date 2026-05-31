@@ -15,5 +15,12 @@
         "destination": "/index.html"
       }
     ]
-  }
+  },
+  "run": [
+    {
+      "source": "api",
+      "serviceId": "recon-backend",
+      "region": "us-central1"
+    }
+  ]
 }

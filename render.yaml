@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: skullrecon-backend
+    env: docker
+    region: oregon
+    plan: free
+    dockerfilePath: api/Dockerfile
+    envVars:
+      - key: PORT
+        value: "8080"
