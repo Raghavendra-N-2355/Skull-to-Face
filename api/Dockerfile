@@ -1,11 +1,11 @@
 FROM python:3.11-slim
 WORKDIR /app
 
-COPY requirements.txt ./
+COPY api/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt gunicorn
 
-COPY . /app
-COPY ../Model /app/Model
+COPY api/. /app/
+COPY Model /app/Model
 
 ENV PORT=8080
 EXPOSE 8080
