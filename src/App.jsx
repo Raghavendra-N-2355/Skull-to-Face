@@ -8,7 +8,7 @@ export default function App() {
   const [result, setResult] = useState(null)
   const [reconUrl, setReconUrl] = useState(null)
   const [loading, setLoading] = useState(false)
-  const apiBase = import.meta.env.VITE_API_URL || ''
+  const apiBase = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '' : 'https://skullrecon-backend.onrender.com')
 
   const handleFile = (e) => {
     const f = e.target.files[0]

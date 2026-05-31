@@ -174,10 +174,10 @@ To deploy the backend on Render free tier:
 
 ### Using the Render backend from the frontend
 
-Set the backend base URL before building the frontend:
+Set the backend base URL before building the frontend. Since you already have a Render backend URL, use:
 
 ```powershell
-$env:VITE_API_URL = "https://your-render-service.onrender.com"
+$env:VITE_API_URL = "https://skullrecon-backend.onrender.com"
 npm run build
 ```
 
