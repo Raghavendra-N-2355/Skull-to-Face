@@ -89,13 +89,37 @@ project/
 ## 🛠️ Model Files Required
 
 Make sure these files exist in the `Model/` directory:
-- `skull_classifier.pth` - Skull vs Animal classifier
-- `skull_gender_model.pth` - Gender classification model
-- `reconstructor.pth` - Face reconstruction model
-- `class_names.json` - Class labels (in parent directory)
 
 ## 📝 Notes
 
-- Supported image formats: JPG, PNG
-- The workflow automatically stops if an animal skull is detected
-- All model processing happens sequentially without modification to model code
+
+# Skull-to-Face UI and API
+
+This repository contains the Vite React frontend and a Flask backend for the Skull-to-Face project.
+
+Quick deploy steps (summary):
+
+- Build and deploy frontend to Firebase Hosting:
+
+```bash
+npm install
+npm run build
+# configure Firebase with `firebase login` and `firebase init` (hosting)
+firebase use YOUR_FIREBASE_PROJECT_ID
+firebase deploy --only hosting
+```
+
+- Build and deploy backend to Cloud Run (from the `api/` folder):
+
+```bash
+cd api
+# build and push with gcloud or use Cloud Build
+gcloud builds submit --tag gcr.io/$(gcloud config get-value project)/recon-backend
+gcloud run deploy recon-backend --image gcr.io/$(gcloud config get-value project)/recon-backend --platform managed --region us-central1 --allow-unauthenticated
+```
+
+- Configure Firebase Hosting rewrite to the Cloud Run service: edit `firebase.json` rewrites section if needed. Replace `YOUR_FIREBASE_PROJECT_ID` in `.firebaserc` with your Firebase project id.
+
+Notes:
+- The Flask backend is containerized via `api/Dockerfile` and can be deployed to Cloud Run.
+- You will need Google Cloud SDK (`gcloud`) and Firebase CLI installed and authenticated.
