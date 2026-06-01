@@ -232,6 +232,14 @@ def run_pipeline(input_image_path, visualize=True):
             plt.figure(figsize=(8,4))
             plt.subplot(1,2,1); plt.title("Input Skull"); plt.imshow(pil_img); plt.axis("off")
             plt.subplot(1,2,2); plt.title(f"Reconstructed Face ({gender_label})"); plt.imshow(face_img); plt.axis("off")
+    # Return a consistent result dict for API consumers
+    return {
+        "stage": "reconstruction",
+        "label": predicted_label,
+        "prob": float(pred_prob),
+        "gender": gender_label,
+        "reconstruction_path": os.path.abspath(out_path)
+    }
             plt.show()
 
     return {
