@@ -32,7 +32,7 @@ from torchvision import transforms, models
 # -----------------------------
 MODEL_DIR = os.path.dirname(os.path.abspath(__file__))
 SKULL_CLASSIFIER_PTH = os.path.join(MODEL_DIR, "skull_classifier.pth")
-CLASS_NAMES_JSON = os.path.join(os.path.dirname(MODEL_DIR), "class_names.json")
+CLASS_NAMES_JSON = os.path.join(MODEL_DIR, "class_names.json")
 GENDER_MODEL_PTH = os.path.join(MODEL_DIR, "skull_gender_model.pth")
 RECONSTRUCTOR_PTH = os.path.join(MODEL_DIR, "reconstructor.pth")
 
