@@ -6,6 +6,7 @@ RUN pip install --no-cache-dir -r requirements.txt gunicorn
 
 COPY api/. ./
 COPY Model ./Model
+COPY class_names.json ./
 
 ENV PORT=8080
 EXPOSE 8080
