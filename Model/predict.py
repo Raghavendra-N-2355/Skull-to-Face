@@ -114,10 +114,13 @@ class SkullToFaceModel(nn.Module):
 # -----------------------------
 def load_class_names(json_path):
     # Try to locate the class names JSON with several fallbacks to be robust
-    candidates = [json_path,
-                  os.path.join(os.path.dirname(json_path), "class_names.json"),
-                  os.path.join(os.path.dirname(os.path.dirname(json_path)), "class_names.json"),
-                  "class_names.json"]
+    candidates = [
+        json_path,
+        os.path.join(os.path.dirname(json_path), "class_names.json"),
+        os.path.join(MODEL_DIR, "class_names.json"),
+        os.path.join(os.path.dirname(os.path.dirname(json_path)), "class_names.json"),
+        "class_names.json",
+    ]
     for p in candidates:
         if p and os.path.exists(p):
             try:
