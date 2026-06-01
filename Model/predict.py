@@ -113,9 +113,23 @@ class SkullToFaceModel(nn.Module):
 # Load helpers
 # -----------------------------
 def load_class_names(json_path):
-    with open(json_path, "r") as f:
-        classes = json.load(f)
-    return classes
+    # Try to locate the class names JSON with several fallbacks to be robust
+    candidates = [json_path,
+                  os.path.join(os.path.dirname(json_path), "class_names.json"),
+                  os.path.join(os.path.dirname(os.path.dirname(json_path)), "class_names.json"),
+                  "class_names.json"]
+    for p in candidates:
+        if p and os.path.exists(p):
+            try:
+                with open(p, "r") as f:
+                    classes = json.load(f)
+                return classes
+            except Exception:
+                continue
+    # As a last resort, fall back to a sensible default to avoid crashes in production
+    default = ["animal_skull", "human_skull"]
+    print(f"Warning: class_names.json not found at any candidate paths {candidates}. Using default: {default}")
+    return default
 
 def load_skull_classifier(path, class_names):
     model = build_skull_vs_animal_model(len(class_names)).to(device)
