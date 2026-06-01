@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy:firebase": "npx firebase deploy --only hosting,run --project human-skull-to-face"
+    "deploy:firebase": "npx firebase deploy --only hosting --project human-skull-to-face"
   },
   "dependencies": {
     "react": "^18.2.0",

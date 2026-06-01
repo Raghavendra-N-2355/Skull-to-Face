@@ -6,8 +6,17 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'Model'))
-from predict import run_pipeline
+# Support both local repo layout and container build layout:
+# - Local: api/app.py -> ../Model
+# - Container: /app/app.py -> ./Model
+local_model_path = os.path.join(os.path.dirname(__file__), '..', 'Model')
+container_model_path = os.path.join(os.path.dirname(__file__), 'Model')
+if os.path.isdir(local_model_path):
+    sys.path.insert(0, local_model_path)
+elif os.path.isdir(container_model_path):
+    sys.path.insert(0, container_model_path)
+else:
+    raise FileNotFoundError('Could not locate Model directory for predict.py')
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_DIR = os.path.join(BASE_DIR, 'uploads')
@@ -31,6 +40,11 @@ def api_predict():
     fname = f'{uid}_{secure_filename(f.filename)}'
     in_path = os.path.join(UPLOAD_DIR, fname)
     f.save(in_path)
+
+    try:
+        from predict import run_pipeline
+    except Exception as e:
+        return jsonify({'error': f'Failed to import prediction module: {e}'}), 500
 
     try:
         result = run_pipeline(in_path, visualize=False)

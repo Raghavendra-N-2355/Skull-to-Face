@@ -135,7 +135,7 @@ firebase use YOUR_FIREBASE_PROJECT_ID
 firebase deploy --only hosting
 ```
 
-- Deploy the frontend and backend together using Firebase Cloud Run integration:
+- Deploy the frontend only to Firebase Hosting:
 
 ```bash
 npm install
@@ -144,14 +144,14 @@ npx firebase login
 npm run deploy:firebase
 ```
 
-- This uses the `api/` folder to build the Flask backend into a Cloud Run service called `recon-backend`, and rewrites `/api/**` requests from Firebase Hosting to that service.
+- This will publish only the static frontend.
 
-- Render free tier backend deployment is also supported. See the Render section below.
+- Use Render for the backend service and keep `https://skullrecon-backend.onrender.com` as your public API endpoint.
 
 Notes:
-- This requires enabling the Cloud Run Admin API on your Firebase project.
-- The `firebase deploy` command above will deploy both hosting and backend.
-- If you only want frontend hosting without the backend, use the earlier frontend-only method, but reconstruction will not work until the backend is deployed.
+- This removes the Cloud Run requirement from Firebase.
+- The backend must still be deployed separately on Render or another service.
+- The frontend will call the Render backend via `VITE_API_URL`.
 
 ## Render backend deployment
 

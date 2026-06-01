@@ -21,7 +21,7 @@ import sys
 import os
 import json
 from PIL import Image
-import matplotlib.pyplot as plt
+
 
 import torch
 import torch.nn as nn
@@ -210,11 +210,15 @@ def run_pipeline(input_image_path, visualize=True):
     print(f"[3] Reconstruction -> saved to: {out_path}")
 
     if visualize:
-        # Show input and reconstructed side-by-side
-        plt.figure(figsize=(8,4))
-        plt.subplot(1,2,1); plt.title("Input Skull"); plt.imshow(pil_img); plt.axis("off")
-        plt.subplot(1,2,2); plt.title(f"Reconstructed Face ({gender_label})"); plt.imshow(face_img); plt.axis("off")
-        plt.show()
+        try:
+            import matplotlib.pyplot as plt
+        except ImportError:
+            print("matplotlib is not installed; skipping visualization")
+        else:
+            plt.figure(figsize=(8,4))
+            plt.subplot(1,2,1); plt.title("Input Skull"); plt.imshow(pil_img); plt.axis("off")
+            plt.subplot(1,2,2); plt.title(f"Reconstructed Face ({gender_label})"); plt.imshow(face_img); plt.axis("off")
+            plt.show()
 
     return {
         "stage": "human_reconstructed",
