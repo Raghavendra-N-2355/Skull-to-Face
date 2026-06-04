@@ -27,6 +27,10 @@ os.makedirs(RECON_DIR, exist_ok=True)
 app = Flask(__name__)
 CORS(app)
 
+@app.route('/', methods=['GET'])
+def health_check():
+    return jsonify({'status': 'ok', 'service': 'Skull-to-Face Reconstruction API'}), 200
+
 @app.route('/api/predict', methods=['POST'])
 def api_predict():
     if 'file' not in request.files:
