@@ -21,10 +21,17 @@ else:
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_DIR = os.path.join(BASE_DIR, 'uploads')
 RECON_DIR = os.path.join(BASE_DIR, 'recon')
+DIST_DIR = os.path.join(os.path.dirname(BASE_DIR), 'dist')
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(RECON_DIR, exist_ok=True)
 
-app = Flask(__name__)
+# Create Flask app with static file serving for SPA
+if os.path.isdir(DIST_DIR):
+    app = Flask(__name__, static_folder=DIST_DIR, static_url_path='')
+else:
+    # Fallback if dist folder doesn't exist
+    app = Flask(__name__)
+
 CORS(app)
 
 @app.route('/', methods=['GET'])
@@ -69,6 +76,16 @@ def api_predict():
 @app.route('/recon/<path:name>')
 def serve_recon(name):
     return send_from_directory(RECON_DIR, name)
+
+# SPA fallback: serve index.html for any route not caught by API routes
+@app.route('/<path:path>')
+def serve_spa(path):
+    """Serve SPA index.html for client-side routing"""
+    index_path = os.path.join(DIST_DIR, 'index.html')
+    if os.path.exists(index_path):
+        return send_from_directory(DIST_DIR, 'index.html')
+    # If dist/index.html doesn't exist, return 404
+    return jsonify({'error': 'Frontend not found. Build the frontend first.'}), 404
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
