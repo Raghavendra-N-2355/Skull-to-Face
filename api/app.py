@@ -34,7 +34,7 @@ else:
 
 CORS(app)
 
-@app.route('/', methods=['GET'])
+@app.route('/api/health', methods=['GET'])
 def health_check():
     return jsonify({'status': 'ok', 'service': 'Skull-to-Face Reconstruction API'}), 200
 
@@ -76,6 +76,15 @@ def api_predict():
 @app.route('/recon/<path:name>')
 def serve_recon(name):
     return send_from_directory(RECON_DIR, name)
+
+# Serve index.html at root for SPA
+@app.route('/')
+def serve_index():
+    """Serve index.html for SPA"""
+    index_path = os.path.join(DIST_DIR, 'index.html')
+    if os.path.exists(index_path):
+        return send_from_directory(DIST_DIR, 'index.html')
+    return jsonify({'error': 'Frontend not found. Build the frontend first.'}), 404
 
 # SPA fallback: serve index.html for any route not caught by API routes
 @app.route('/<path:path>')
