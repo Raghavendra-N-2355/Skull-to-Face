@@ -25,13 +25,8 @@ DIST_DIR = os.path.join(os.path.dirname(BASE_DIR), 'dist')
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(RECON_DIR, exist_ok=True)
 
-# Create Flask app with static file serving for SPA
-if os.path.isdir(DIST_DIR):
-    app = Flask(__name__, static_folder=DIST_DIR, static_url_path='')
-else:
-    # Fallback if dist folder doesn't exist
-    app = Flask(__name__)
-
+# Create Flask app without static folder first - we'll serve manually
+app = Flask(__name__)
 CORS(app)
 
 @app.route('/api/health', methods=['GET'])
@@ -81,20 +76,43 @@ def serve_recon(name):
 @app.route('/')
 def serve_index():
     """Serve index.html for SPA"""
-    index_path = os.path.join(DIST_DIR, 'index.html')
-    if os.path.exists(index_path):
+    dist_exists = os.path.isdir(DIST_DIR)
+    index_exists = os.path.exists(os.path.join(DIST_DIR, 'index.html'))
+    
+    if dist_exists and index_exists:
         return send_from_directory(DIST_DIR, 'index.html')
-    return jsonify({'error': 'Frontend not found. Build the frontend first.'}), 404
+    else:
+        # Return a basic HTML if frontend not built
+        return f'''
+        <html>
+        <body>
+            <h1>Skull-to-Face Reconstruction API</h1>
+            <p>Status: Running</p>
+            <p>DIST_DIR: {DIST_DIR}</p>
+            <p>DIST exists: {dist_exists}</p>
+            <p>index.html exists: {index_exists}</p>
+            <p>Frontend not available yet or not built.</p>
+        </body>
+        </html>
+        '''
+
+# Serve static files from dist (JS, CSS, etc)
+@app.route('/assets/<path:filename>')
+def serve_assets(filename):
+    return send_from_directory(os.path.join(DIST_DIR, 'assets'), filename)
 
 # SPA fallback: serve index.html for any route not caught by API routes
 @app.route('/<path:path>')
 def serve_spa(path):
     """Serve SPA index.html for client-side routing"""
+    # Don't serve API routes through SPA
+    if path.startswith('api/'):
+        return jsonify({'error': 'Not found'}), 404
+    
     index_path = os.path.join(DIST_DIR, 'index.html')
     if os.path.exists(index_path):
         return send_from_directory(DIST_DIR, 'index.html')
-    # If dist/index.html doesn't exist, return 404
-    return jsonify({'error': 'Frontend not found. Build the frontend first.'}), 404
+    return jsonify({'error': 'Frontend not found'}), 404
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
