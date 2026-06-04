@@ -6,9 +6,22 @@ COPY ${CONTEXT_ROOT}/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt gunicorn
 
 COPY ${CONTEXT_ROOT}/. ./
-COPY Model ./Model
+
+# Note: Model files (*.pth) are in .gitignore and must be provided separately
+# Options:
+# 1. Mount model files to /app/Model at runtime
+# 2. Use Git LFS to track model files
+# 3. Download models from storage during startup
+# Create empty Model directory for now
+RUN mkdir -p /app/Model
+
+# Copy entrypoint script
+COPY api/entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
 
 ENV PORT=8080
 EXPOSE 8080
+
+ENTRYPOINT ["./entrypoint.sh"]
 
 CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app", "--workers", "1", "--threads", "8"]
